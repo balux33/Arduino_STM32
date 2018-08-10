@@ -29,7 +29,7 @@
 
 
 // Constructor when n is the number of LEDs in the strip
-WS2812B::WS2812B(uint16_t number_of_leds) :
+WS2812B::WS2812B(uint16_t number_of_leds):
   brightness(0), pixels(NULL)
 {
   updateLength(number_of_leds);
@@ -45,11 +45,19 @@ WS2812B::~WS2812B()
   SPI.end();
 }
 
+
+// becouse clk div >= 32 generate unwanted spikes on MOSI line (maybe fake stm32f103c8 chips?)
+//therefore use div 16 or DIV 8 and generate bit pattern of 6 bit /symbol
+//this version not optimized for speed
 void WS2812B::begin(void) {
 
 if (!begun)
 {
-  SPI.setClockDivider(SPI_CLOCK_DIV32);// need bit rate of 400nS but closest we can do @ 72Mhz is 444ns (which is within spec)
+  if( F_CPU==72000000)
+	SPI.setClockDivider(SPI_CLOCK_DIV16);
+  else  //48MHz
+	SPI.setClockDivider(SPI_CLOCK_DIV8);
+  SPI.setBitOrder(MSBFIRST);
   SPI.begin();
   begun = true;
 }
@@ -62,7 +70,7 @@ void WS2812B::updateLength(uint16_t n)
 	  free(doubleBuffer); 
   }
 
-  numBytes = (n<<3) + n + 2; // 9 encoded bytes per pixel. 1 byte empty peamble to fix issue with SPI MOSI and on byte at the end to clear down MOSI 
+  numBytes = (n<<4) + n + n + 2; // 18 encoded bytes per pixel. 1 byte empty peamble to fix issue with SPI MOSI and on byte at the end to clear down MOSI 
 							// Note. (n<<3) +n is a fast way of doing n*9
   if((doubleBuffer = (uint8_t *)malloc(numBytes*2)))
   {
@@ -107,26 +115,61 @@ void WS2812B::show(void)
 */
 void WS2812B::setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b)
  {
-   uint8_t *bptr = pixels + (n<<3) + n +1;
-   uint8_t *tPtr = (uint8_t *)encoderLookup + g*2 + g;// need to index 3 x g into the lookup
+   uint8_t *bptr = pixels + (n<<4) + n +n +1;  
+   uint64_t encoded;
    
-   *bptr++ = *tPtr++;
-   *bptr++ = *tPtr++;
-   *bptr++ = *tPtr++;
-
-   tPtr = (uint8_t *)encoderLookup + r*2 + r;
-   *bptr++ = *tPtr++;
-   *bptr++ = *tPtr++;
-   *bptr++ = *tPtr++;   
    
-   tPtr = (uint8_t *)encoderLookup + b*2 + b;
-   *bptr++ = *tPtr++;
-   *bptr++ = *tPtr++;
-   *bptr++ = *tPtr++;
+   encoded = encode(g);
+   for(int8_t i=5;i>=0;i--)
+   {
+	   *bptr++ = (uint8_t)(encoded >> (i<<3));
+   }
+   
+   
+   encoded = encode(r);
+   for(int8_t i=5;i>=0;i--)
+   {
+	   *bptr++ = (uint8_t)(encoded >> (i<<3));
+   }
+   
+   
+	encoded = encode(b);
+	for(int8_t i=5;i>=0;i--)
+   {
+	   *bptr++ = (uint8_t)(encoded >> (i<<3));
+   }
  }
 
+ 
+ uint64_t WS2812B::encode(uint8_t c)
+ {
+   uint64_t Encoding = 0;
+   uint8_t Index=0;
+   
+    while (Index < 8)
+    {
+        Encoding = Encoding << 6;
+        if (c & (1 << 7))
+        {
+            Encoding |= 0x3C;  // 0b111100 
+        }
+        else
+        {
+            Encoding |= 0x30; //0b110000  
+        }
+        c = c << 1;
+        Index++;
+        
+    }
+		return Encoding;
+ }
+ 
+ 
 void WS2812B::setPixelColor(uint16_t n, uint32_t c)
   {
+	  if( n > numLEDs -1)
+		  return;
+	  
      uint8_t r,g,b;
    
     if(brightness) 
@@ -142,22 +185,32 @@ void WS2812B::setPixelColor(uint16_t n, uint32_t c)
 	  b = (uint8_t)c;		
 	}
 	
-   uint8_t *bptr = pixels + (n<<3) + n +1;
-   uint8_t *tPtr = (uint8_t *)encoderLookup + g*2 + g;// need to index 3 x g into the lookup
+	
+  	
+   uint8_t *bptr = pixels + (n<<4) + n + n +1;
    
-   *bptr++ = *tPtr++;
-   *bptr++ = *tPtr++;
-   *bptr++ = *tPtr++;
-
-   tPtr = (uint8_t *)encoderLookup + r*2 + r;
-   *bptr++ = *tPtr++;
-   *bptr++ = *tPtr++;
-   *bptr++ = *tPtr++;   
+   uint64_t encoded;
    
-   tPtr = (uint8_t *)encoderLookup + b*2 + b;
-   *bptr++ = *tPtr++;
-   *bptr++ = *tPtr++;
-   *bptr++ = *tPtr++;
+   
+   encoded = encode(g);
+   for(int8_t i=5;i>=0;i--)
+   {
+	   *bptr++ = (uint8_t)(encoded >> (i<<3));
+   }
+   
+   
+   encoded = encode(r);
+   for(int8_t i=5;i>=0;i--)
+   {
+	   *bptr++ = (uint8_t)(encoded >> (i<<3));
+   }
+   
+   
+	encoded = encode(b);
+	for(int8_t i=5;i>=0;i--)
+   {
+	   *bptr++ = (uint8_t)(encoded >> (i<<3));
+   }
 }
 
 // Convert separate R,G,B into packed 32-bit RGB color.
@@ -225,14 +278,13 @@ uint8_t WS2812B::getBrightness(void) const {
 */
 void WS2812B::clear() 
 {
+	
 	uint8_t * bptr= pixels+1;// Note first byte in the buffer is a preable and is always zero. hence the +1
 	uint8_t *tPtr;
-
-	for(int i=0;i< (numLEDs *3);i++)
+	
+	for(int i=0;i< (numLEDs);i++)
 	{
-	   tPtr = (uint8_t *)encoderLookup;
-   	   *bptr++ = *tPtr++;
-	   *bptr++ = *tPtr++;
-	   *bptr++ = *tPtr++;	
+		setPixelColor(i, Color(0,0,0));
 	}
+	
 }
