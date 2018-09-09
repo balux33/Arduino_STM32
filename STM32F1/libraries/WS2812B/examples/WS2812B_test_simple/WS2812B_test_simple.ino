@@ -1,6 +1,6 @@
 #include <WS2812B.h>
 
-#define NUM_LEDS 16
+#define NUM_LEDS 6
 /*
  * Note. Library uses SPI1
  * Connect the WS2812B data input to MOSI on your board. (PA7)
