@@ -49,19 +49,28 @@ WS2812B::~WS2812B()
 // becouse clk div >= 32 generate unwanted spikes on MOSI line (maybe fake stm32f103c8 chips?)
 //therefore use div 16 or DIV 8 and generate bit pattern of 6 bit /symbol
 //this version not optimized for speed
-void WS2812B::begin(void) {
 
-if (!begun)
-{
-  if( F_CPU==72000000)
-	SPI.setClockDivider(SPI_CLOCK_DIV16);
-  else  //48MHz
-	SPI.setClockDivider(SPI_CLOCK_DIV8);
-  SPI.setBitOrder(MSBFIRST);
-  SPI.begin();
-  begun = true;
+void WS2812B::begin(CRGB * CRGB_buffer)
+ {
+	if (!begun)
+	{
+		if(CRGB_buffer != NULL)
+			actual_CRGB_buffer = CRGB_buffer;
+	
+		if( F_CPU==72000000)
+		   SPI.setClockDivider(SPI_CLOCK_DIV16);
+		else  //48MHz
+		   SPI.setClockDivider(SPI_CLOCK_DIV8);
+		SPI.setBitOrder(MSBFIRST);
+		SPI.begin();
+		begun = true;
+	}
 }
-}
+
+void WS2812B::begin()
+ {
+	 begin(NULL);
+ }
 
 void WS2812B::updateLength(uint16_t n)
 {
@@ -87,9 +96,12 @@ void WS2812B::updateLength(uint16_t n)
   }
 }
 
-// Sends the current buffer to the leds
-void WS2812B::show(void) 
+// Sends the current internal  buffer to the leds
+void WS2812B::send_data_to_leds(void) 
 {
+  if(!canShow())  //time betwen show() less than 300us
+	  return;     
+	  
   SPI.dmaSendAsync(pixels,numBytes);// Start the DMA transfer of the current pixel buffer to the LEDs and return immediately.
 
   // Need to copy the last / current buffer to the other half of the double buffer as most API code does not rebuild the entire contents
@@ -107,8 +119,32 @@ void WS2812B::show(void)
 	pixels	= doubleBuffer;  // set pixels to first buffer
 	memcpy(pixels,doubleBuffer+numBytes,numBytes);	 // copy second buffer to first buffer 
   }	
+  
+  endTime = micros();
 }
 
+void WS2812B::show(CRGB * CRGB_buffer) //write  CRGB buffer to leds
+{
+	if(CRGB_buffer == NULL)
+		return;
+	if(!canShow())  //time betwen show() less than 300us
+	    return;
+
+	for(uint16_t i= 0; i< numLEDs; i++)
+	{
+		setPixelColor(i, CRGB_buffer[i].r, CRGB_buffer[i].g, CRGB_buffer[i].b);
+	}
+	
+	send_data_to_leds();
+}
+
+void WS2812B::show() //write actual CRGB buffer to leds
+{
+	show(actual_CRGB_buffer);
+}
+ 
+ 
+ 
 /*Sets a specific pixel to a specific r,g,b colour 
 * Because the pixels buffer contains the encoded bitstream, which is in triplets
 * the lookup table need to be used to find the correct pattern for each byte in the 3 byte sequence.
@@ -118,6 +154,12 @@ void WS2812B::setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b)
    uint8_t *bptr = pixels + (n<<4) + n +n +1;  
    uint64_t encoded;
    
+    if(brightness) 
+	{ 
+      r = (((uint16_t)r)*((uint16_t)brightness)) >> 8;
+      g = (((uint16_t)g)*((uint16_t)brightness)) >> 8;
+      b = (((uint16_t)b)*((uint16_t)brightness)) >> 8;
+	}
    
    encoded = encode(g);
    for(int8_t i=5;i>=0;i--)
@@ -215,18 +257,14 @@ void WS2812B::setPixelColor(uint16_t n, uint32_t c)
 
 // Convert separate R,G,B into packed 32-bit RGB color.
 // Packed format is always RGB, regardless of LED strand color order.
-uint32_t WS2812B::Color(uint8_t r, uint8_t g, uint8_t b) {
+uint32_t WS2812B::Color(uint8_t r, uint8_t g, uint8_t b) 
+{
   return ((uint32_t)r << 16) | ((uint32_t)g <<  8) | b;
 }
 
-// Convert separate R,G,B,W into packed 32-bit WRGB color.
-// Packed format is always WRGB, regardless of LED strand color order.
-uint32_t WS2812B::Color(uint8_t r, uint8_t g, uint8_t b, uint8_t w) {
-  return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g <<  8) | b;
-}
 
-
-uint16_t WS2812B::numPixels(void) const {
+uint16_t WS2812B::numPixels(void) const 
+{
   return numLEDs;
 }
 
@@ -242,7 +280,8 @@ uint16_t WS2812B::numPixels(void) const {
 // the limited number of steps (quantization) in the old data will be
 // quite visible in the re-scaled version.  For a non-destructive
 // change, you'll need to re-render the full strip data.  C'est la vie.
-void WS2812B::setBrightness(uint8_t b) {
+void WS2812B::setBrightness(uint8_t b) 
+{
   // Stored brightness value is different than what's passed.
   // This simplifies the actual scaling math later, allowing a fast
   // 8x8-bit multiply and taking the MSB.  'brightness' is a uint8_t,
@@ -269,7 +308,8 @@ void WS2812B::setBrightness(uint8_t b) {
 }
 
 //Return the brightness value
-uint8_t WS2812B::getBrightness(void) const {
+uint8_t WS2812B::getBrightness(void) const
+{
   return brightness - 1;
 }
 
@@ -284,7 +324,7 @@ void WS2812B::clear()
 	
 	for(int i=0;i< (numLEDs);i++)
 	{
-		setPixelColor(i, Color(0,0,0));
+		setPixelColor(i, 0x00000000);
 	}
 	
 }

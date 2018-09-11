@@ -3,7 +3,21 @@
 # Class
 #######################################
 
-WS2812B	KEYWORD1
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+CHSV	KEYWORD1
+CRGB	KEYWORD1
+
+CRGBPalette16	KEYWORD1
+CRGBPalette256	KEYWORD1
+CHSVPalette16	KEYWORD1
+CHSVPalette256	KEYWORD1
+CHSVPalette16	KEYWORD1
+CHSVPalette256	KEYWORD1
+CRGBPalette16	KEYWORD1
+CRGBPalette256	KEYWORD1
 
 #######################################
 # Methods and Functions 
@@ -13,11 +27,197 @@ setPixelColor	KEYWORD2
 numPixels		KEYWORD2
 Color			KEYWORD2
 show			KEYWORD2
+setBrightness	KEYWORD2
+getBrightness	KEYWORD2
 
 clear			KEYWORD2
-updateLength			KEYWORD2
+updateLength	KEYWORD2
 
-canShow			KEYWORD2
+# Color util methods
+blend	KEYWORD2
+nblend	KEYWORD2
+ColorFromPalette	KEYWORD2
+HeatColor	KEYWORD2
+UpscalePalette	KEYWORD2
+blend	KEYWORD2
+fadeLightBy	KEYWORD2
+fadeToBlackBy	KEYWORD2
+fade_raw	KEYWORD2
+fade_video	KEYWORD2
+fill_gradient	KEYWORD2
+fill_gradient_RGB	KEYWORD2
+fill_palette	KEYWORD2
+fill_rainbow	KEYWORD2
+fill_solid	KEYWORD2
+map_data_into_colors_through_palette	KEYWORD2
+nblend	KEYWORD2
+nscale8	KEYWORD2
+nscale8_video	KEYWORD2
+
+# HSV methods
+hsv2grb_rainbow	KEYWORD2
+hsv2rgb_spectrum	KEYWORD2
+hsv2rgb_raw	KEYWORD2
+fill_solid	KEYWORD2
+fill_rainbow	KEYWORD2
+
+# Colors
+CRGB::AliceBlue	KEYWORD2
+CRGB::Amethyst	KEYWORD2
+CRGB::AntiqueWhite	KEYWORD2
+CRGB::Aqua	KEYWORD2
+CRGB::Aquamarine	KEYWORD2
+CRGB::Azure	KEYWORD2
+CRGB::Beige	KEYWORD2
+CRGB::Bisque	KEYWORD2
+CRGB::Black	KEYWORD2
+CRGB::BlanchedAlmond	KEYWORD2
+CRGB::Blue	KEYWORD2
+CRGB::BlueViolet	KEYWORD2
+CRGB::Brown	KEYWORD2
+CRGB::BurlyWood	KEYWORD2
+CRGB::CadetBlue	KEYWORD2
+CRGB::Chartreuse	KEYWORD2
+CRGB::Chocolate	KEYWORD2
+CRGB::Coral	KEYWORD2
+CRGB::CornflowerBlue	KEYWORD2
+CRGB::Cornsilk	KEYWORD2
+CRGB::Crimson	KEYWORD2
+CRGB::Cyan	KEYWORD2
+CRGB::DarkBlue	KEYWORD2
+CRGB::DarkCyan	KEYWORD2
+CRGB::DarkGoldenrod	KEYWORD2
+CRGB::DarkGray	KEYWORD2
+CRGB::DarkGreen	KEYWORD2
+CRGB::DarkKhaki	KEYWORD2
+CRGB::DarkMagenta	KEYWORD2
+CRGB::DarkOliveGreen	KEYWORD2
+CRGB::DarkOrange	KEYWORD2
+CRGB::DarkOrchid	KEYWORD2
+CRGB::DarkRed	KEYWORD2
+CRGB::DarkSalmon	KEYWORD2
+CRGB::DarkSeaGreen	KEYWORD2
+CRGB::DarkSlateBlue	KEYWORD2
+CRGB::DarkSlateGray	KEYWORD2
+CRGB::DarkTurquoise	KEYWORD2
+CRGB::DarkViolet	KEYWORD2
+CRGB::DeepPink	KEYWORD2
+CRGB::DeepSkyBlue	KEYWORD2
+CRGB::DimGray	KEYWORD2
+CRGB::DodgerBlue	KEYWORD2
+CRGB::FireBrick	KEYWORD2
+CRGB::FloralWhite	KEYWORD2
+CRGB::ForestGreen	KEYWORD2
+CRGB::Fuchsia	KEYWORD2
+CRGB::Gainsboro	KEYWORD2
+CRGB::GhostWhite	KEYWORD2
+CRGB::Gold	KEYWORD2
+CRGB::Goldenrod	KEYWORD2
+CRGB::Gray	KEYWORD2
+CRGB::Green	KEYWORD2
+CRGB::GreenYellow	KEYWORD2
+CRGB::Honeydew	KEYWORD2
+CRGB::HotPink	KEYWORD2
+CRGB::IndianRed	KEYWORD2
+CRGB::Indigo	KEYWORD2
+CRGB::Ivory	KEYWORD2
+CRGB::Khaki	KEYWORD2
+CRGB::Lavender	KEYWORD2
+CRGB::LavenderBlush	KEYWORD2
+CRGB::LawnGreen	KEYWORD2
+CRGB::LemonChiffon	KEYWORD2
+CRGB::LightBlue	KEYWORD2
+CRGB::LightCoral	KEYWORD2
+CRGB::LightCyan	KEYWORD2
+CRGB::LightGoldenrodYellow	KEYWORD2
+CRGB::LightGreen	KEYWORD2
+CRGB::LightGrey	KEYWORD2
+CRGB::LightPink	KEYWORD2
+CRGB::LightSalmon	KEYWORD2
+CRGB::LightSeaGreen	KEYWORD2
+CRGB::LightSkyBlue	KEYWORD2
+CRGB::LightSlateGray	KEYWORD2
+CRGB::LightSteelBlue	KEYWORD2
+CRGB::LightYellow	KEYWORD2
+CRGB::Lime	KEYWORD2
+CRGB::LimeGreen	KEYWORD2
+CRGB::Linen	KEYWORD2
+CRGB::Magenta	KEYWORD2
+CRGB::Maroon	KEYWORD2
+CRGB::MediumAquamarine	KEYWORD2
+CRGB::MediumBlue	KEYWORD2
+CRGB::MediumOrchid	KEYWORD2
+CRGB::MediumPurple	KEYWORD2
+CRGB::MediumSeaGreen	KEYWORD2
+CRGB::MediumSlateBlue	KEYWORD2
+CRGB::MediumSpringGreen	KEYWORD2
+CRGB::MediumTurquoise	KEYWORD2
+CRGB::MediumVioletRed	KEYWORD2
+CRGB::MidnightBlue	KEYWORD2
+CRGB::MintCream	KEYWORD2
+CRGB::MistyRose	KEYWORD2
+CRGB::Moccasin	KEYWORD2
+CRGB::NavajoWhite	KEYWORD2
+CRGB::Navy	KEYWORD2
+CRGB::OldLace	KEYWORD2
+CRGB::Olive	KEYWORD2
+CRGB::OliveDrab	KEYWORD2
+CRGB::Orange	KEYWORD2
+CRGB::OrangeRed	KEYWORD2
+CRGB::Orchid	KEYWORD2
+CRGB::PaleGoldenrod	KEYWORD2
+CRGB::PaleGreen	KEYWORD2
+CRGB::PaleTurquoise	KEYWORD2
+CRGB::PaleVioletRed	KEYWORD2
+CRGB::PapayaWhip	KEYWORD2
+CRGB::PeachPuff	KEYWORD2
+CRGB::Peru	KEYWORD2
+CRGB::Pink	KEYWORD2
+CRGB::Plaid	KEYWORD2
+CRGB::Plum	KEYWORD2
+CRGB::PowderBlue	KEYWORD2
+CRGB::Purple	KEYWORD2
+CRGB::Red	KEYWORD2
+CRGB::RosyBrown	KEYWORD2
+CRGB::RoyalBlue	KEYWORD2
+CRGB::SaddleBrown	KEYWORD2
+CRGB::Salmon	KEYWORD2
+CRGB::SandyBrown	KEYWORD2
+CRGB::SeaGreen	KEYWORD2
+CRGB::Seashell	KEYWORD2
+CRGB::Sienna	KEYWORD2
+CRGB::Silver	KEYWORD2
+CRGB::SkyBlue	KEYWORD2
+CRGB::SlateBlue	KEYWORD2
+CRGB::SlateGray	KEYWORD2
+CRGB::Snow	KEYWORD2
+CRGB::SpringGreen	KEYWORD2
+CRGB::SteelBlue	KEYWORD2
+CRGB::Tan	KEYWORD2
+CRGB::Teal	KEYWORD2
+CRGB::Thistle	KEYWORD2
+CRGB::Tomato	KEYWORD2
+CRGB::Turquoise	KEYWORD2
+CRGB::Violet	KEYWORD2
+CRGB::Wheat	KEYWORD2
+CRGB::White	KEYWORD2
+CRGB::WhiteSmoke	KEYWORD2
+CRGB::Yellow	KEYWORD2
+CRGB::YellowGreen	KEYWORD2
+
+# hue literals
+HUE_RED	LITERAL1
+HUE_ORANGE	LITERAL1
+HUE_YELLOW	LITERAL1
+HUE_GREEN	LITERAL1
+HUE_AQUA	LITERAL1
+HUE_BLUE	LITERAL1
+HUE_PURPLE	LITERAL1
+HUE_PINK	LITERAL1
+
+
+
+
 
 
 #######################################
