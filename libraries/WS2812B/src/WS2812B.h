@@ -20,7 +20,7 @@
 #include "colorutils.h"
 #include "colorpalettes.h"
 
-static uint8_t encoded_black[6]  = {0xC3,0x0C,0x30,0xC3,0x0C,0x30};		
+static const  uint8_t encoded_black[6]  = {0xC3,0x0C,0x30,0xC3,0x0C,0x30};		
 									
 class WS2812B {
 public:
@@ -36,7 +36,7 @@ public:
   void updateLength(uint16_t n);
   uint8_t getBrightness(void) const;
   uint16_t numPixels(void) const;
-  inline bool canShow(void) { return (micros() - endTime) >= 300L; }
+  inline bool canShow(void) { return (micros() - endTime) >= (unsigned long)(35L* numLEDs); }
   
   //new FastLED style api
   void set_actual_buffer(CRGB * CRGB_buffer) { actual_CRGB_buffer = CRGB_buffer; }
@@ -48,8 +48,7 @@ private:
     //old style api only internal use
   void setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b);
   void setPixelColor(uint16_t n, uint32_t c);
-  static uint32_t Color(uint8_t r, uint8_t g, uint8_t b);
-  void send_data_to_leds(void);  
+  static uint32_t Color(uint8_t r, uint8_t g, uint8_t b); 
   
   
   uint64_t encode(uint8_t c);
@@ -62,7 +61,7 @@ private:
   uint8_t *doubleBuffer;	// Holds the start of the double buffer (1 buffer for async DMA transfer and one for the API interaction.
   CRGB    *actual_CRGB_buffer = NULL;
   
-  uint32_t endTime;         // Latch timing reference
+  uint64_t endTime;         // Latch timing reference
 	
 };
 

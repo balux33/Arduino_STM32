@@ -30,7 +30,7 @@
 
 // Constructor when n is the number of LEDs in the strip
 WS2812B::WS2812B(uint16_t number_of_leds):
-  brightness(0), pixels(NULL)
+  brightness(32), pixels(NULL)
 {
   updateLength(number_of_leds);
 }
@@ -46,7 +46,7 @@ WS2812B::~WS2812B()
 }
 
 
-// becouse clk div >= 32 generate unwanted spikes on MOSI line (maybe fake stm32f103c8 chips?)
+// becouse clk div >= 32 generate unwanted spikes on MOSI line (maybe fake stm32f103c8 chips?) Yes, only GD32f103 chips produce this strange thing
 //therefore use div 16 or DIV 8 and generate bit pattern of 6 bit /symbol
 //this version not optimized for speed
 
@@ -81,7 +81,7 @@ void WS2812B::updateLength(uint16_t n)
 
   numBytes = (n<<4) + n + n + 2; // 18 encoded bytes per pixel. 1 byte empty peamble to fix issue with SPI MOSI and on byte at the end to clear down MOSI 
 							// Note. (n<<3) +n is a fast way of doing n*9
-  if((doubleBuffer = (uint8_t *)malloc(numBytes*2)))
+  if((doubleBuffer = (uint8_t *)malloc(numBytes*1)))
   {
     numLEDs = n;	 
 	pixels = doubleBuffer;
@@ -93,38 +93,17 @@ void WS2812B::updateLength(uint16_t n)
   else 
   {
     numLEDs = numBytes = 0;
+	Serial.println("WS2812B malloc failed!!!");
   }
 }
 
-// Sends the current internal  buffer to the leds
-void WS2812B::send_data_to_leds(void) 
-{
-  if(!canShow())  //time betwen show() less than 300us
-	  return;     
-	  
-  SPI.dmaSendAsync(pixels,numBytes);// Start the DMA transfer of the current pixel buffer to the LEDs and return immediately.
 
-  // Need to copy the last / current buffer to the other half of the double buffer as most API code does not rebuild the entire contents
-  // from scratch. Often just a few pixels are changed e.g in a chaser effect
-  
-  if (pixels==doubleBuffer)
-  {
-	// pixels was using the first buffer
-	pixels	= doubleBuffer+numBytes;  // set pixels to second buffer
-	memcpy(pixels,doubleBuffer,numBytes);// copy first buffer to second buffer
-  }
-  else
-  {
-	// pixels was using the second buffer	  
-	pixels	= doubleBuffer;  // set pixels to first buffer
-	memcpy(pixels,doubleBuffer+numBytes,numBytes);	 // copy second buffer to first buffer 
-  }	
-  
-  endTime = micros();
-}
 
 void WS2812B::show(CRGB * CRGB_buffer) //write  CRGB buffer to leds
 {
+	if(!canShow())  //time betwen show() less than 300us
+	  return;   
+	  
 	if(CRGB_buffer == NULL)
 		return;
 	if(!canShow())  //time betwen show() less than 300us
@@ -135,7 +114,10 @@ void WS2812B::show(CRGB * CRGB_buffer) //write  CRGB buffer to leds
 		setPixelColor(i, CRGB_buffer[i].r, CRGB_buffer[i].g, CRGB_buffer[i].b);
 	}
 	
-	send_data_to_leds();
+	//send_data_to_leds();
+	SPI.dmaSendAsync(pixels,numBytes);
+	
+	endTime = micros();
 }
 
 void WS2812B::show() //write actual CRGB buffer to leds
@@ -200,8 +182,7 @@ void WS2812B::setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b)
             Encoding |= 0x30; //0b110000  
         }
         c = c << 1;
-        Index++;
-        
+        Index++; 
     }
 		return Encoding;
  }
