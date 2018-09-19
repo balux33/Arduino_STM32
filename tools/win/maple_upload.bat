@@ -4,6 +4,22 @@ rem: Need to change drive if My Documents is on a drive other than C:
 set driverLetter=%~dp0
 set driverLetter=%driverLetter:~0,2%
 %driverLetter%
+
+cd %~dp0
+cd ..\..\..\..\..\..\..
+if exist driver_installed.txt (
+    echo "driver already installed"
+) else (
+    echo "driver isn't installed, installing driver.."
+	@echo "This file help Arduino_STM32 board to check driver installation state, delete it if you want to reinstall driver in next uplpad" > driver_installed.txt
+	cd %~dp0
+	cd ..\..
+	cd drivers\win
+	call "install_drivers.bat"
+)
+
+
+
 cd %~dp0
 java -jar maple_loader.jar %1 %2 %3 %4 %5 %6 %7 %8 %9
 
