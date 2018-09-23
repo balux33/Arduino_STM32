@@ -139,7 +139,7 @@ void takeSamples()
     real_to_complex(data16,data32,FFTLEN);//clear inputs
     perform_fft(data32, y, FFTLEN);
   
- /* 
+ 
   if (digitalRead(BTN1) == LOW)
   {  //print everything to serial, very slow obviously
     printdataset(data32, FFTLEN, 0);
@@ -151,7 +151,7 @@ void takeSamples()
     printdataset(data32, FFTLEN, 0);
    // printdataset(y, FFTLEN, sampleRate); 
   } 
-  */  
+  
 }
 
 
@@ -275,13 +275,13 @@ void printdataset(uint32_t * data, int len, int samplerate)
 		Serial.println("i	value");
 		for (int i =0; i< len; i++)
 		{
-			//Serial.print(i);
-			//Serial.print("	");
-			//Serial.println(data[i]);
+			Serial.print(i);
+			Serial.print("	");
+			Serial.println(data[i]);
       if(data[i] > max) max = data[i];
 		}
-   Serial.print("maximum:");
-   Serial.println(max-16384);
+   //Serial.print("maximum:");
+   //Serial.println(max-16384);
 	} 
 }
 

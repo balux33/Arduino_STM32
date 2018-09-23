@@ -28,6 +28,10 @@
 #include "Printable.h"
 #include <stdarg.h>
 
+extern "C"{
+#include <print_format.h>
+}
+
 enum {
     BIN  = 2,
     OCT  = 8,

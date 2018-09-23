@@ -208,28 +208,12 @@ size_t Print::println(const Printable& x)
   return n;
 }
 
-#ifdef SUPPORTS_PRINTF
-#include <stdio.h>
-#include <stdarg.h>
-// Work in progress to support printf.
-// Need to implement stream FILE to write individual chars to chosen serial port
-int Print::printf (__const char *__restrict __format, ...)
- {
-FILE *__restrict __stream;
-     int ret_status = 0;
 
-
-     va_list args;
-     va_start(args,__format);
-     ret_status = vfprintf(__stream, __format, args);
-     va_end(args);
-     return ret_status;
- }
- #endif
 
 /*
  * Private methods
  */
+ 
 
 size_t Print::printNumber(unsigned long long n, uint8 base) {
     unsigned char buf[CHAR_BIT * sizeof(long long)];
@@ -316,12 +300,6 @@ size_t s=0;
 	return s;
 }
 
-
-#include <stdarg.h>
-typedef void (*pfn_outputchar)(char c, void* p);
-extern "C"{
-int _print_format (pfn_outputchar pfn, void* pvoid, const char *format, va_list ap);
-}
 
 static void put_char_to_string (char c, void* p)
 {

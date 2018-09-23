@@ -1,3 +1,7 @@
+#ifndef cr4_fft_1024_stm32_fft_h
+#define cr4_fft_1024_stm32_fft_h
+
+
 /*
 
 x[N] be the time signal samples. To use the FFT functions of the DSP library, the
@@ -15,3 +19,5 @@ extern "C" {
 	void cr4_fft_1024_stm32(void *pssOUT, void *pssIN, unsigned short Nbin);
 }
 
+
+#endif
