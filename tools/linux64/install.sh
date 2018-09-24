@@ -21,6 +21,7 @@ if sudo [ -w /etc/udev/rules.d ]; then
     sudo usermod -aG dialout $USER
 
     chmod +x upload-reset
+    chmod +x maple_upload
    cd dfu-util
    chmod +x dfu-prefix
    chmod +x dfu-suffix

@@ -20,6 +20,7 @@ if sudo [ -w /etc/udev/rules.d ]; then
     sudo adduser $USER dialout
 
    chmod +x upload-reset
+   chmod +x maple_upload
    cd dfu-util
    chmod +x dfu-prefix
    chmod +x dfu-suffix
