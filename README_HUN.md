@@ -1,6 +1,6 @@
 # Nerd Accessory Number 1 (NaN1) Official Repository
 Üdvözöljük a NaN1 hivatalos repository-ján. Itt megtalálod a kezdéshez szükséges dolgokat és néhány példakódot.
-For English instructions, open []README.md(README.md).
+For English instructions, open [README.md](README.md).
 
 # Értesítés
 A projekt az [STM32 Arduino](https://github.com/rogerclarkmelbourne/Arduino_STM32) alapján készült, manuális telepítéshez keresd fel az oldalukat.
