@@ -170,6 +170,25 @@ float NaN1_FFT::get_band_rms(uint16_t start_freq, uint16_t end_freq)
   return rms;
 }
 
+float NaN1_FFT::get_band_max(uint16_t start_freq, uint16_t end_freq)
+{
+  uint16_t start_bin = frequency_to_bin(start_freq);
+  uint16_t end_bin   = frequency_to_bin(end_freq);
+
+ if(start_bin == 0) start_bin +=1;
+
+ //Serial.printf("start:%d end:%d\n",start_bin, end_bin);
+  
+  float max = 0.0;
+  
+  for(int i = start_bin; i < end_bin; i++)  //centered bins??
+  {
+   if(fft_result[i] > max) max = fft_result[i];
+  }
+  
+  return max;
+}
+
 
 
 
@@ -189,15 +208,39 @@ CRGB NaN1_FFT::ampl_to_color(float ampl, float max_ampl)
   }
 }
 
+CRGB NaN1_FFT::ampl_to_color_bar(float ampl, float max_ampl, uint8_t row)
+{
+  float step = max_ampl/6;
+  if(ampl > step * row)
+  {
+    return c_lut[row];
+  }
+  else
+  {
+    return CRGB::Black;
+  }
+}
+
+void NaN1_FFT::draw_to_bar(float ampl, float max_ampl)
+ {
+  for (uint8_t i=0;i<6;i++)
+  {
+    
+     leds[i] = ampl_to_color_bar(ampl,max_ampl, i);
+   
+  }
+ }
 
 
-void NaN1_FFT::print_to_led()
+void NaN1_FFT::print_to_led(bool mode)  // mode true rms false max
 {
   float ampl_db ;
   
   for(uint8_t i=0;i<6;i++)
   {
-    ampl_db = 20.0*log10(get_band_rms(band_table[i], band_table[i+1]));
+if(mode) ampl_db = 20.0*log10(get_band_rms(band_table[i], band_table[i+1]));
+else     ampl_db = 20.0*log10(get_band_max(band_table[i], band_table[i+1]));
+    
     ampl_db -= treshold_table[i];
     ampl_db = ampl_db < 0.0 ? 0.0 : ampl_db;
 	//Serial.printf("ampl:%d\n", (int) ampl_db);
@@ -206,10 +249,24 @@ void NaN1_FFT::print_to_led()
 
 }
 
+void NaN1_FFT::print_to_led_one_band(uint8_t band, bool mode) //index start from 0  //mode true rms  false max
+{
+    float ampl_db ;
+	
+	if(band > 5) band = 5;
+  
+  if(mode) ampl_db = 20.0*log10(get_band_rms(band_table[band], band_table[band+1])); 
+  else 		ampl_db = 20.0*log10(get_band_max(band_table[band], band_table[band+1])); 
+    
+    ampl_db -= treshold_table[band]; 
+    ampl_db = ampl_db < 0.0 ? 0.0 : ampl_db;
+	draw_to_bar(ampl_db, max_ampl_table[band]);
+}
+
 
 void NaN1_FFT::printdataset(uint32_t * data, int len, int samplerate)
 {
-  int max = 0;
+  //int max = 0;
 	Serial.print("Printing dataset at ");
 	Serial.println((long long unsigned int) data, HEX);
 	if (samplerate > 0)
@@ -246,34 +303,22 @@ void NaN1_FFT::printdataset(uint32_t * data, int len, int samplerate)
 	
 	if(band_table_ != NULL)
 	{
-		for(int i=0;i<band_table_size;i++)
-		{
-			band_table[i] = band_table_[i];
-		}
+			band_table= band_table_;
 	}
 	
 	if(c_lut_ != NULL)
 	{
-		for(int i=0;i<c_lut_size;i++)
-		{
-			c_lut[i] = c_lut_[i];
-		}
+			c_lut = c_lut_;
 	}
 	
 	if(treshold_table_ != NULL)
 	{
-		for(int i=0;i<c_lut_size-1;i++)
-		{
-			treshold_table[i] = treshold_table_[i];
-		}
+		    treshold_table = treshold_table_;
 	}
 	
 	if(max_ampl_table_ != NULL)
 	{
-		for(int i=0;i<c_lut_size-1;i++)
-		{
-			max_ampl_table[i] = max_ampl_table_[i];
-		}
+			max_ampl_table = max_ampl_table_;
 	}
 }
 

@@ -40,9 +40,15 @@ class NaN1_FFT
    
    void begin();
    void do_FFT();
-   void print_to_led();
+   void print_to_led(bool mode = true);  //default rms
+   void print_to_led_one_band(uint8_t band = 0, bool mode = false);  //dafault max
    CRGB ampl_to_color(float ampl, float max_ampl);
    float get_band_rms(uint16_t start_freq, uint16_t end_freq);
+   float get_band_max(uint16_t start_freq, uint16_t end_freq);
+   void change_treshold_table(float *treshold_table_) {if(treshold_table_ != NULL) treshold_table = treshold_table_;}
+   void change_max_ampl_table(float *max_ampl_table_) {if(max_ampl_table_ != NULL) max_ampl_table = max_ampl_table_;}
+   void change_band_table(uint16_t *band_table_) {if(band_table_ != NULL) band_table = band_table_;}
+   void change_color_table(CRGB *c_lut_) {if(c_lut_ != NULL) c_lut = c_lut_;}
    
   private:
     //fft buffers
@@ -51,16 +57,23 @@ class NaN1_FFT
 	uint32_t fft_result[FFTLEN];
 	
 	//fft tables
-	uint16_t band_table[7] = {0,400,1400,2800,4300,5800,7200};
-	CRGB c_lut[6] = {CRGB::Green, CRGB::Green, CRGB::Yellow, CRGB::Yellow, CRGB::Red,  CRGB::Red};
-	float treshold_table[band_table_size-1] = {27,27,27,27,27,27};
-	float max_ampl_table[band_table_size-1] = {43,41,41,41,41,41};
+	const uint16_t band_table_default[7] = {0,400,1400,2800,4300,5800,7200};
+	const CRGB c_lut_default[6] = {CRGB::Green, CRGB::Green, CRGB::Yellow, CRGB::Yellow, CRGB::Red,  CRGB::Red};
+	const float treshold_table_default[band_table_size-1] = {27,27,27,27,27,27};
+	const float max_ampl_table_default[band_table_size-1] = {43,41,41,41,41,41};
 	
+	 uint16_t *band_table = (uint16_t*)band_table_default;
+	 CRGB *c_lut = (CRGB*)c_lut_default;
+	 float *treshold_table = (float*)treshold_table_default;
+	 float *max_ampl_table = (float*)max_ampl_table_default;
+	 
 	//led buffer
 	CRGB *leds = NULL;
 	
 	//private functions
 	void  printdataset(uint32_t * data, int len, int samplerate);
+	void draw_to_bar(float ampl, float max_ampl);
+	CRGB ampl_to_color_bar(float ampl, float max_ampl, uint8_t row);
 	
     
   
