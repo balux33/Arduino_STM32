@@ -77,7 +77,7 @@
 
 #define left_button              PB7
 #define right_button             PA5
-#define midle_button             PB12
+#define middle_button            PB12
 
 #define button_pressed  0
 #define button_released 1

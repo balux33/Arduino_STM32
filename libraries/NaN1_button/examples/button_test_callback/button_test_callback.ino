@@ -10,7 +10,7 @@ CRGB color = CRGB::Black;
 
 NaN1_button left  = NaN1_button(left_button);
 NaN1_button right = NaN1_button(right_button);
-NaN1_button midle = NaN1_button(midle_button);
+NaN1_button midle = NaN1_button(middle_button);
 
 void left_press_cb()
 {

@@ -21,7 +21,7 @@ void setup()
 
  pinMode(left_button,  INPUT_PULLUP);
  pinMode(right_button, INPUT_PULLUP);
- pinMode(midle_button, INPUT_PULLUP);
+ pinMode(middle_button, INPUT_PULLUP);
 
  delay(500);
 }
@@ -39,7 +39,7 @@ void loop()
   color.green = color.green + 8;
  }
 
- if(digitalRead(midle_button) == button_pressed)
+ if(digitalRead(middle_button) == button_pressed)
  {
   color.blue = color.blue + 8;
  }
