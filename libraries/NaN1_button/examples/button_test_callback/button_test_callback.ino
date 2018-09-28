@@ -10,7 +10,7 @@ CRGB color = CRGB::Black;
 
 NaN1_button left  = NaN1_button(left_button);
 NaN1_button right = NaN1_button(right_button);
-NaN1_button midle = NaN1_button(middle_button);
+NaN1_button middle = NaN1_button(middle_button);
 
 void left_press_cb()
 {
@@ -22,7 +22,7 @@ void right_press_cb()
    color.green = color.green + 8;
 }
 
-void midle_release_cb()
+void middle_release_cb()
 {
    color.blue = color.blue + 8;
 }
@@ -38,7 +38,7 @@ void setup()
 
  left.register_press_callback(left_press_cb);
  right.register_press_callback(right_press_cb);
- midle.register_release_callback(midle_release_cb);
+ middle.register_release_callback(middle_release_cb);
 
  delay(500);
 }
@@ -49,7 +49,7 @@ void loop()
 {
  left.refresh();
  right.refresh();
- midle.refresh();
+ middle.refresh();
   
  leds[0] = color;
  leds[3] = color;

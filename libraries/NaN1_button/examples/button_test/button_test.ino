@@ -10,7 +10,7 @@ CRGB color = CRGB::Black;
 
 NaN1_button left  = NaN1_button(left_button);
 NaN1_button right = NaN1_button(right_button);
-NaN1_button midle = NaN1_button(middle_button);
+NaN1_button middle = NaN1_button(middle_button);
 
 void setup()
 {
@@ -28,7 +28,7 @@ void loop()
 {
  left.refresh();
  right.refresh();
- midle.refresh();
+ middle.refresh();
   
  if(left.press_detect())
  {
@@ -40,7 +40,7 @@ void loop()
   color.green = color.green + 8;
  }
 
- if(midle.release_detect())
+ if(middle.release_detect())
  {
   color.blue = color.blue + 8;
  }
