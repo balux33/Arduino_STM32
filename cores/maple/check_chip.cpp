@@ -17,12 +17,12 @@ bool check_fake_chip()  //return true if gd32f103 detected  or false if genuine 
 
   if(loop_time < 20)
    {
-      Serial.printf("loop_time:%d  fake chip detected!!\n");
+     // Serial.printf("loop_time:%d  fake chip detected!!\n");
       return true;
    }
    else
    {
-      Serial.printf("loop_time:%d  genuine chip detected!!\n");
+      //Serial.printf("loop_time:%d  genuine chip detected!!\n");
     return false;
    }
   
