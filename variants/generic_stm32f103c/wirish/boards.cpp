@@ -51,6 +51,7 @@
 #include <libmaple/nvic.h>
 #include <libmaple/systick.h>
 #include "boards_private.h"
+#include "check_chip.h"
 
 static void setup_flash(void);
 static void setup_clocks(void);
@@ -58,10 +59,20 @@ static void setup_nvic(void);
 static void setup_adcs(void);
 static void setup_timers(void);
 
+int right_button_pin_var;
+
 /*
  * Exported functions
  */
 
+ inline void set_right_button_pin_var()
+ {
+	 if(check_fake_chip())  //if genuine chip  disable spi clk alt func and PA5 work as R button input 						//if gd32f103 chip detected do not disable clk pin otherwise SPI dont work WTF?? later R button rewired to other pins
+		right_button_pin_var = PA2;
+	else
+		right_button_pin_var = PA5;
+ }
+ 
 void init(void) {
     setup_flash();
     setup_clocks();
@@ -73,6 +84,7 @@ void init(void) {
     wirish::priv::board_setup_usb();
     wirish::priv::series_init();
     boardInit();
+	set_right_button_pin_var();
 }
 
 /* Provide a default no-op boardInit(). */

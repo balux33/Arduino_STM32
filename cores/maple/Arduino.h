@@ -40,5 +40,6 @@ void yield(void);
 #endif // __cplusplus
 
 #include "variant.h"
+#include "check_chip.h"
 
 #endif

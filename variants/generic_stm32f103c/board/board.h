@@ -75,9 +75,12 @@
 
 #define LED_BUILTIN PC13
 
+extern int right_button_pin_var;
+
 #define left_button              PB7
-#define right_button             PA5
+#define right_button             right_button_pin_var
 #define middle_button            PB12
+
 
 #define button_pressed  0
 #define button_released 1

@@ -103,8 +103,9 @@ namespace wirish {
 			
 			//USB reenumeration fix added by balux33
 			//wait a small before start usb reenumeration 
-			for(volatile unsigned int i=0;i<100000;i++)
+			for(volatile unsigned int i=0;i<1000000;i++)
 			{
+				asm("NOP");
 				asm("NOP");
 				asm("NOP");
 			}
@@ -112,7 +113,7 @@ namespace wirish {
 			gpio_write_bit(PIN_MAP[PA12].gpio_device, PIN_MAP[PA12].gpio_bit,0);
 			
 			
-			for(volatile unsigned int i=0;i<512;i++);// Only small delay seems to be needed, and USB pins will get configured in Serial.begin
+			for(volatile unsigned int i=0;i<1024;i++);// Only small delay seems to be needed, and USB pins will get configured in Serial.begin
 			gpio_set_mode(PIN_MAP[PA12].gpio_device, PIN_MAP[PA12].gpio_bit, GPIO_INPUT_FLOATING);
 #endif			
 			Serial.begin();// Roger Clark. Changed SerialUSB to Serial for Arduino sketch compatibility

@@ -88,6 +88,7 @@ void real_to_complex(uint16_t * in, uint32_t * out, int len)
 
 void setADCs ()
 {
+  pinMode(analogInPin, INPUT_ANALOG);
   rcc_set_prescaler(RCC_PRESCALER_ADC,RCC_ADCPRE_PCLK_DIV_4 );
 
   int pinMapADCin = PIN_MAP[analogInPin].adc_channel;

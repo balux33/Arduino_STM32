@@ -63,6 +63,11 @@ void WS2812B::begin(CRGB * CRGB_buffer)
 		   SPI.setClockDivider(SPI_CLOCK_DIV8);
 		SPI.setBitOrder(MSBFIRST);
 		SPI.begin();
+		if(!check_fake_chip())  //if genuine chip  disable spi clk alt func and PA5 work as R button input 
+								//if gd32f103 chip detected do not disable clk pin otherwise SPI dont work WTF?? later R button rewired to other pins
+		{
+			 pinMode(PA5, INPUT_PULLUP);
+		}
 		begun = true;
 	}
 }
@@ -106,8 +111,6 @@ void WS2812B::show(CRGB * CRGB_buffer) //write  CRGB buffer to leds
 	  
 	if(CRGB_buffer == NULL)
 		return;
-	if(!canShow())  //time betwen show() less than 300us
-	    return;
 
 	for(uint16_t i= 0; i< numLEDs; i++)
 	{
