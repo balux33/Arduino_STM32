@@ -47,6 +47,7 @@ bool first = true;
 uint32_t elapsed_time = 0;
 uint32_t start_voltage;
 uint8_t batt_status = 0;
+uint8_t batt_level = 0;
 
 void loop()
 {
@@ -71,9 +72,10 @@ void loop()
   {
      uint32_t voltage = bat.read_bat_voltage();
      batt_status = bat.get_battery_status();
-     bt.printf("voltage:%d state:%d elapsed time:%d\n", voltage, batt_status, elapsed_time);
+     batt_level = bat.get_battery_level();
+     bt.printf("voltage:%d state:%d level:%d elapsed time:%d\n", voltage, batt_status, batt_level, elapsed_time);
 
-     if(batt_status <= 3)
+     if(batt_level <= 20)
      {
       voltage = bat.read_bat_voltage();
       bt.printf("battery drain cycle completed start voltage:%d end voltage:%d dv:%d elapsed time:%d", start_voltage, voltage, start_voltage - voltage, elapsed_time);
