@@ -47,3 +47,13 @@ uint8_t NaN1_battery::get_battery_status()  //return 0-5 0 empty 4 fully charged
 	else           // <3500
 		return 0;  //battery empty
 }
+
+uint8_t NaN1_battery::get_battery_level() //return 0-100(%)
+{
+	uint32_t voltage = read_bat_voltage(8);
+	if(voltage>4200)
+		return 100;
+	else if (voltage < 3300)
+		return 0;
+	return (100.00/(4200.00-3300.00))*(voltage-3300.00); 
+}
