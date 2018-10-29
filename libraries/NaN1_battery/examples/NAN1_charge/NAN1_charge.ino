@@ -71,7 +71,7 @@ void setup()
     charge(); 
    }
 
-   //PLACE ADDITIONAL CODE HERE IF NEEDED. THIS WILL NEVER RUN IF YOU ENTER 'Charge indicator' MODE
+   //PLACE ADDITIONAL CODE HERE IF NEEDED. THIS CODE WILL NOT RUN UNTIL THE BOARD IS IN 'Charge indicator' MODE
 }
 
 void loop()
