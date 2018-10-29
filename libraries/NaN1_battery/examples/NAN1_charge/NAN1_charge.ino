@@ -23,7 +23,12 @@ void init_leds()
 
 void charge()
 {
-  while(true)
+  for(int i=0;i<NUM_LEDS;i++)
+      leds[i] = CRGB::Blue;
+  strip.show();
+  while(digitalRead(middle_button)==0)
+    delay(1);
+  while(digitalRead(middle_button)==1) //You can exit charge indicator mode if you hold the middle button down
   {
     uint8_t batt_level = 0;
     batt_level = bat.get_battery_level();
@@ -47,6 +52,9 @@ void charge()
     strip.show();
     delay(5000);
   }
+  for(int i=0;i<NUM_LEDS;i++)
+      leds[i] = CRGB::Black;
+  strip.show();
 }
 
 
